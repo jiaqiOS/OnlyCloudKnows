@@ -5,15 +5,16 @@
  * https://github.com/web-fonts/dejavu-sans-condensed-bold
  */
 const pathToFont = chrome.runtime.getURL('fonts/dejavu-sans-condensed-bold-webfont.woff2');
-const injectedFont = new FontFace('DejaVu Sans Condensed Bold', 'url(pathToFont)');
+const injectedFont = new FontFace('DejaVu Sans Condensed Bold', "url(" + pathToFont + ")");
 document.fonts.add(injectedFont);
 
-const passDataToBackground = (base64, imageNode) => {
+const passDataToBackground = (base64, image) => {
   const message = { action: 'fetchImage', imageData: base64 };
   chrome.runtime.sendMessage(message, (response) => {
     if (response.length >= 0) {
-      // console.log(response[0]);
-      addTextElementToImageNode(response[0], imageNode);
+      console.log(response[0]);
+
+      overlayPredictionTextToImage(response[0], image);
     }
   });
 }
@@ -46,7 +47,8 @@ const loadAndEncodeImage = (imageUrl, imageNode) => {
     canvas.height = this.height;
     canvas.getContext('2d').drawImage(this, 0, 0);
     const base64EncodedData = canvas.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, '');
-    // console.log(base64EncodedData);
+    console.log(base64EncodedData);
+
     passDataToBackground(base64EncodedData, imageNode);
     return;
     // }
@@ -65,19 +67,19 @@ const getImageElementWithSrcUrl = () => {
 getImageElementWithSrcUrl();
 
 // https://github.com/dhowe/AdLiPo/blob/4e1e31e1f61210d8692abc0386c2c7083d676b77/src/js/injectTemplate.js#L181
-const addTextElementToImageNode = (textContent, imageNode) => {
-  const originalParent = imageNode.parentElement; // https://stackoverflow.com/a/8685780/18513152
+const overlayPredictionTextToImage = (textContent, image) => {
+  const originalParent = image.parentElement; // https://stackoverflow.com/a/8685780/18513152
 
   const container = document.createElement('div');
   container.style.backgroundColor = 'transparent';
   container.style.border = '0';
-  container.style.width = imageNode.offsetWidth + 'px';
-  container.style.height = imageNode.offsetHeight + 'px';
+  container.style.width = image.offsetWidth + 'px';
+  container.style.height = image.offsetHeight + 'px';
   container.style.position = 'relative';
-  imageNode.style.position = 'absolute';
+  image.style.position = 'absolute';
   // https://github.com/tensorflow/tfjs-examples/blob/ca7a661228234448284f0b3c723b41bb1ec27dcd/chrome-extension/src/content.js#L115
-  originalParent.insertBefore(container, imageNode);
-  container.appendChild(imageNode);
+  originalParent.insertBefore(container, image);
+  container.appendChild(image);
 
   const width = container.style.width;
   const height = container.style.height;
@@ -106,7 +108,7 @@ const addTextElementToImageNode = (textContent, imageNode) => {
   text.style.padding = padding;
   text.innerText = textContent;
   container.appendChild(text);
-  text.before(imageNode);
+  text.before(image);
 }
 
 // https://github.com/dhowe/AdLiPo/blob/4e1e31e1f61210d8692abc0386c2c7083d676b77/src/js/injectTemplate.js#L268
