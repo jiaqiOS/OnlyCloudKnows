@@ -1,5 +1,5 @@
 {
-  "name": "OnlyCloudKnows",
+  "name": "Only Cloud Knows",
   "description": "",
   "version": "0.0.2",
   "manifest_version": 3,
@@ -10,12 +10,12 @@
     "128": "images/icon128.png"
   },
   "background": {
-    "service_worker": "background.js",
+    "service_worker": "src/background.js",
     "type": "module"
   },
   "content_scripts": [{
     "matches": ["http://*/*", "https://*/*"],
-    "js": ["content.js"]
+    "js": ["src/content.js", "src/fontSize.js"]
   }],
   "web_accessible_resources": [{
     "resources": ["fonts/*.woff2"],

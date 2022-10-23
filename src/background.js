@@ -11,11 +11,27 @@ fetchApiKey()
   .then(response => console.log('gotApiKey'))
   .catch(err => console.error(err.message));
 
+const filter = {
+  properties: ["pinned"]
+}
+
+try {
+  chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab, filter) => {
+    if (changeInfo.status == 'complete') {
+      chrome.scripting.executeScript({
+        files: ['src/content.js'],
+        target: { tabId: tab.id }
+      });
+    }
+  })
+} catch (err) {
+  console.log(err);
+}
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (!request) { return; }
   if (request.action === 'fetchImage') {
-    // console.log(request.imageData);
-
+    console.log(request.imageData);
     analyzeImage(request, sendResponse);
     return true;
   }
@@ -75,7 +91,7 @@ const analyzeImage = (request, sendResponse) => {
             const label = labels[i].description;
             const confidenceScore = Math.floor(labels[i].score * 100) + '%';
 
-            const regex = new RegExp('Art');
+            const regex = new RegExp('(?:^|\W)Art(?:$|\W)');
             const hasArtLabel = regex.test(label);
             let annotation = {};
             if (hasArtLabel) {
