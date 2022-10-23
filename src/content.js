@@ -94,6 +94,7 @@ const overlayPredictionTextOverImage = (textContent, image) => {
   const horizontalPadding = Math.min(parseInt(Math.max(2, parseInt(width) / 15)), 20);
   const verticalPadding = Math.min(parseInt(Math.max(2, parseInt(height) / 15)), 20);
   const padding = `${verticalPadding}px ${horizontalPadding}px`;
+  // https://github.com/dhowe/AdLiPo/blob/4e1e31e1f61210d8692abc0386c2c7083d676b77/src/js/injectTemplate.js#L268
   const fontSize = computeFontSize(textContent, width, height, font, textAlign, wordBreak, lineHeight, padding, 100);
 
   container.style.color = 'red';
@@ -114,4 +115,3 @@ const overlayPredictionTextOverImage = (textContent, image) => {
   container.appendChild(text);
   text.before(image);
 }
-
