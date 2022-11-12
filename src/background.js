@@ -65,6 +65,8 @@ const analyzeImage = (request, sendResponse) => {
   // https://www.youtube.com/watch?v=Kw5tC5nQMRY&list=PLRqwX-V7Uu6YxDKpFzf_2D84p0cyk4T7X&index=11
   const options = {
     method: 'POST',
+    mode: 'cors',
+    cache: 'no-cache',
     headers: {
       'Content-Type': 'application/json'
     },
