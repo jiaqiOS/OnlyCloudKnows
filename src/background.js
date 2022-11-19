@@ -11,23 +11,6 @@ fetchApiKey()
   .then(response => console.log('gotApiKey'))
   .catch(err => console.error(err.message));
 
-const filter = {
-  properties: ["pinned"]
-}
-
-try {
-  chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab, filter) => {
-    if (changeInfo.status == 'complete') {
-      chrome.scripting.executeScript({
-        files: ['src/content.js'],
-        target: { tabId: tab.id }
-      });
-    }
-  })
-} catch (err) {
-  console.log(err);
-}
-
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (!request) { return; }
   if (request.action === 'fetchImage') {
