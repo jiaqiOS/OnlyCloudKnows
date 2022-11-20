@@ -6,4 +6,4 @@ Only Cloud Knows is a browser extension that detects images containing "art" as 
 <img width="1624" alt="superflex" src="https://user-images.githubusercontent.com/96087431/202853929-292ed2bb-661a-49d0-9b3f-0a8ec80df5fe.png">
 <img width="1624" alt="whitney_artport" src="https://user-images.githubusercontent.com/96087431/202853934-0cf08184-2202-4a99-a34d-77997a22ba92.png">
 
-# Description
+## Description
