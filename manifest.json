@@ -1,6 +1,6 @@
 {
   "name": "Only Cloud Knows",
-  "description": "Detect images containing 'art' as perceived through the lens of Google Cloud Vision AI.",
+  "description": "Detects and evaluates images containing 'art' as perceived through the lens of Google Cloud Vision AI."
   "version": "0.0.2",
   "manifest_version": 3,
   "icons": {
