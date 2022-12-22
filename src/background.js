@@ -14,8 +14,7 @@ fetchApiKey()
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (!request) { return; }
   if (request.action === 'fetchImage') {
-    // console.log(request.imageData);
-
+    console.log(request.imageData);
     analyzeImage(request, sendResponse);
     return true;
   }
@@ -49,6 +48,8 @@ const analyzeImage = (request, sendResponse) => {
   // https://www.youtube.com/watch?v=Kw5tC5nQMRY&list=PLRqwX-V7Uu6YxDKpFzf_2D84p0cyk4T7X&index=11
   const options = {
     method: 'POST',
+    mode: 'cors',
+    cache: 'no-cache',
     headers: {
       'Content-Type': 'application/json'
     },
@@ -75,7 +76,7 @@ const analyzeImage = (request, sendResponse) => {
             const label = labels[i].description;
             const confidenceScore = Math.floor(labels[i].score * 100) + '%';
 
-            const regex = new RegExp('Art');
+            const regex = new RegExp('(?:^|\W)Art(?:$|\W)');
             const hasArtLabel = regex.test(label);
             let annotation = {};
             if (hasArtLabel) {

@@ -3,17 +3,19 @@
  * https://developer.mozilla.org/en-US/docs/Web/API/FontFaceSet/add
  * https://developer.chrome.com/docs/extensions/reference/runtime/#method-getURL
  * https://github.com/web-fonts/dejavu-sans-condensed-bold
+ * Another way to add fonts, injecting a style node, would cause an obvious delay.
  */
 const pathToFont = chrome.runtime.getURL('fonts/dejavu-sans-condensed-bold-webfont.woff2');
-const injectedFont = new FontFace('DejaVu Sans Condensed Bold', 'url(pathToFont)');
-document.fonts.add(injectedFont);
+const injectedFont = new FontFace('DejaVu Sans Condensed Bold', "url(" + pathToFont + ")");
 
-const passDataToBackground = (base64, imageNode) => {
+const passDataToBackground = async (base64, image) => {
   const message = { action: 'fetchImage', imageData: base64 };
   chrome.runtime.sendMessage(message, (response) => {
     if (response.length >= 0) {
-      // console.log(response[0]);
-      addTextElementToImageNode(response[0], imageNode);
+      if (typeof response[0] !== 'undefined') {
+        console.log(response[0]);
+        overlayPredictionTextOverImage(response[0], image);
+      }
     }
   });
 }
@@ -46,7 +48,7 @@ const loadAndEncodeImage = (imageUrl, imageNode) => {
     canvas.height = this.height;
     canvas.getContext('2d').drawImage(this, 0, 0);
     const base64EncodedData = canvas.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, '');
-    // console.log(base64EncodedData);
+    console.log(base64EncodedData);
     passDataToBackground(base64EncodedData, imageNode);
     return;
     // }
@@ -62,22 +64,26 @@ const getImageElementWithSrcUrl = () => {
   });
 }
 
-getImageElementWithSrcUrl();
+const init = () => {
+  document.fonts.add(injectedFont);
+  // https://developer.mozilla.org/en-US/docs/Web/API/FontFace
+  injectedFont.load().then(() => getImageElementWithSrcUrl(), (err) => { console.error(err) });
+}
+init();
 
 // https://github.com/dhowe/AdLiPo/blob/4e1e31e1f61210d8692abc0386c2c7083d676b77/src/js/injectTemplate.js#L181
-const addTextElementToImageNode = (textContent, imageNode) => {
-  const originalParent = imageNode.parentElement; // https://stackoverflow.com/a/8685780/18513152
-
+const overlayPredictionTextOverImage = (textContent, image) => {
+  const originalParent = image.parentElement; // https://stackoverflow.com/a/8685780/18513152
   const container = document.createElement('div');
   container.style.backgroundColor = 'transparent';
   container.style.border = '0';
-  container.style.width = imageNode.offsetWidth + 'px';
-  container.style.height = imageNode.offsetHeight + 'px';
+  container.style.width = image.offsetWidth + 'px';
+  container.style.height = image.offsetHeight + 'px';
   container.style.position = 'relative';
-  imageNode.style.position = 'absolute';
+  image.style.position = 'absolute';
   // https://github.com/tensorflow/tfjs-examples/blob/ca7a661228234448284f0b3c723b41bb1ec27dcd/chrome-extension/src/content.js#L115
-  originalParent.insertBefore(container, imageNode);
-  container.appendChild(imageNode);
+  originalParent.insertBefore(container, image);
+  container.appendChild(image);
 
   const width = container.style.width;
   const height = container.style.height;
@@ -88,13 +94,14 @@ const addTextElementToImageNode = (textContent, imageNode) => {
   const horizontalPadding = Math.min(parseInt(Math.max(2, parseInt(width) / 15)), 20);
   const verticalPadding = Math.min(parseInt(Math.max(2, parseInt(height) / 15)), 20);
   const padding = `${verticalPadding}px ${horizontalPadding}px`;
+  // https://github.com/dhowe/AdLiPo/blob/4e1e31e1f61210d8692abc0386c2c7083d676b77/src/js/injectTemplate.js#L268
   const fontSize = computeFontSize(textContent, width, height, font, textAlign, wordBreak, lineHeight, padding, 100);
 
   container.style.color = 'red';
   container.style.fontFamily = font;
+  container.style.fontSize = fontSize;
   container.style.fontWeight = 'normal';
   container.style.textAlign = textAlign;
-  container.style.fontSize = fontSize;
   container.style.wordBreak = wordBreak;
   container.style.lineHeight = lineHeight;
   container.style.display = 'table';
@@ -106,68 +113,5 @@ const addTextElementToImageNode = (textContent, imageNode) => {
   text.style.padding = padding;
   text.innerText = textContent;
   container.appendChild(text);
-  text.before(imageNode);
-}
-
-// https://github.com/dhowe/AdLiPo/blob/4e1e31e1f61210d8692abc0386c2c7083d676b77/src/js/injectTemplate.js#L268
-const computeFontSize = (textContent, width, height, font, textAlign, wordBreak, lineHeight, padding, tryLimit) => {
-  textContent = textContent.trim();
-  let css = {}, cssStr;
-  const getRealHeight = () => {
-    testEl.style.fontSize = guess + 'px';
-    document.body.appendChild(testEl);
-    realHeight = testEl.clientHeight;
-    testEl.parentNode.removeChild(testEl);
-  }
-
-  const targetWidth = parseFloat(width.slice(0, -1).slice(0, -1));
-  const targetHeight = parseFloat(height.slice(0, -1).slice(0, -1));
-  const contentLength = textContent.length;
-  const testEl = document.createElement('div');
-  testEl.style.wordBreak = 'normal';
-  testEl.style.textAlign = 'left';
-  let lastDirection;
-  const last5 = [];
-  let tries = 0;
-  let cross = 0;
-
-  let guess = (Math.sqrt(targetWidth * targetHeight / contentLength));
-  cssStr = 'height: auto;display: block!important;width: ' + width + '!important;padding: ' + padding + ';font-size: ' + guess + 'px;font-family: ' + font + ';text-align: ' + textAlign + ';word-break: ' + wordBreak + ';line-height: ' + lineHeight + ';';
-
-  testEl.setAttribute('style', cssStr);
-  testEl.innerText = textContent;
-  document.body.appendChild(testEl);
-  let realHeight = testEl.clientHeight;
-  testEl.parentNode.removeChild(testEl);
-
-  while (tries < tryLimit && Math.abs(realHeight - targetHeight) > Math.max(0.05 * targetHeight, 5)) {
-    let gap = targetHeight - realHeight;
-
-    if (gap > 0 !== lastDirection) cross++;
-    if (cross > 3) {
-      guess = last5.sort((a, b) => {
-        return b - a
-      })[0];
-      getRealHeight();
-      break;
-    }
-    lastDirection = gap > 0;
-    guess += (gap * guess) / realHeight;
-
-    if (guess < 1) {
-      guess = 1;
-      getRealHeight();
-      break;
-    }
-    getRealHeight();
-    if (last5.length >= 5) last5.shift();
-    last5.push(guess);
-    tries++;
-  }
-  guess = guess.toFixed(2);
-  while (realHeight > targetHeight) {
-    guess -= 0.1;
-    getRealHeight();
-  }
-  return guess + 'px';
+  text.before(image);
 }

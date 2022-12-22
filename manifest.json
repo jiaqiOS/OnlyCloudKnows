@@ -1,6 +1,6 @@
 {
-  "name": "OnlyCloudKnows",
-  "description": "",
+  "name": "Only Cloud Knows",
+  "description": "Detects images containing 'art', as perceived through the lens of Google Cloud Vision AI.",
   "version": "0.0.2",
   "manifest_version": 3,
   "icons": {
@@ -10,15 +10,15 @@
     "128": "icons/icon128.png"
   },
   "background": {
-    "service_worker": "background.js",
+    "service_worker": "src/background.js",
     "type": "module"
   },
   "content_scripts": [{
     "matches": ["http://*/*", "https://*/*"],
-    "js": ["content.js"]
+    "js": ["src/content.js", "src/font_size.js"]
   }],
   "web_accessible_resources": [{
-    "resources": ["*.woff2"],
+    "resources": ["fonts/*.woff2"],
     "matches": ["<all_urls>"]
   }],
   "permissions": [
