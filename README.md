@@ -1,10 +1,10 @@
 # Only Cloud Knows
 
-Only Cloud Knows is a Chrome extension that detects images containing "art", as perceived through the lens of Google Cloud Vision AI.
+_Only Cloud Knows_ is a Chrome extension that detects images containing "art", as perceived through the lens of Google Cloud Vision AI.
 <img width="1624" alt="moma" src="https://user-images.githubusercontent.com/96087431/202893770-4a30b472-83de-4300-9685-53636d13a6a0.png">
-<img width="1624" alt="numbers_shows" src="https://user-images.githubusercontent.com/96087431/202853913-f4335db3-21ea-4fcf-9d17-88743947c868.png">
-<img width="1624" alt="superflex" src="https://user-images.githubusercontent.com/96087431/202853929-292ed2bb-661a-49d0-9b3f-0a8ec80df5fe.png">
-<img width="1624" alt="whitney_artport" src="https://user-images.githubusercontent.com/96087431/202853934-0cf08184-2202-4a99-a34d-77997a22ba92.png">
+<img width="1624" alt="tino-sehgal" src="https://user-images.githubusercontent.com/96087431/209639307-45cf52b2-2500-4e1a-9671-19e6a60c1247.png">
+<img width="1624" alt="walker" src="https://user-images.githubusercontent.com/96087431/207547689-9d02bc22-c52b-46b7-b0d8-f5a41512bf05.png">
+<img width="1624" alt="whitney" src="https://user-images.githubusercontent.com/96087431/208236386-c66a9b4e-4d0c-4f31-942a-4d968c4e1a31.png">
 
 ## Description
 
@@ -25,4 +25,4 @@ The ubiquitous cloud-shaped icon on the screen encapsulates an infinitely comple
 The Latin origin of the term data is the plural form of datum, meaning a "(thing) given." Art, however, is never given as merely a thing. _Only Cloud Knows_, a Chrome extension that detects images containing "art", as perceived through the lens of Google Cloud Vision AI, manifests how this emerging regime attempts to capture the incalculable and unknown in computationally legible form—the confidence labels returned from the Vision API overlay the images as each page loads. By operating within  industrial AI's wrong-headed perceptions, _Only Cloud Knows_ invites users to consider the biases and limits of machine intelligence: What lies beneath its threshold of recognizability? What is excluded from future possibilities? With this project, I aim to mirror how belief in the technical sightline has clouded our vision and to uncover how accelerating cognitive automation has surreptitiously short-circuited our sensory-noetic loop.
 
 ## Acknowledgment
-Thanks to Daniel C. Howe for the open-source code of his inspirational [AdLiPo](https://rednoise.org/daniel/pages/adlipo/) software, helpful critical comments on the prototype, and the ongoing dialogue on iterative development.
+Special thanks to Daniel C. Howe for the open-source code of his inspirational [AdLiPo](https://rednoise.org/daniel/pages/adlipo/) software, helpful critical comments on the prototype, and the ongoing dialogue on iterative development.
