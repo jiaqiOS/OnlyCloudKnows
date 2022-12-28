@@ -1,7 +1,6 @@
 # Only Cloud Knows
 
-_Only Cloud Knows_ is a Chrome extension that detects images containing "art", as perceived through the lens of Google Cloud Vision AI.
-<img width="1624" alt="moma" src="https://user-images.githubusercontent.com/96087431/202893770-4a30b472-83de-4300-9685-53636d13a6a0.png">
+<img width="1624" alt="artists-shit" src="https://user-images.githubusercontent.com/96087431/211147470-60ebc1ed-f725-4e7d-8a35-cddc7f7b597c.png">
 <img width="1624" alt="tino-sehgal" src="https://user-images.githubusercontent.com/96087431/209639307-45cf52b2-2500-4e1a-9671-19e6a60c1247.png">
 <img width="1624" alt="walker" src="https://user-images.githubusercontent.com/96087431/207547689-9d02bc22-c52b-46b7-b0d8-f5a41512bf05.png">
 <img width="1624" alt="whitney" src="https://user-images.githubusercontent.com/96087431/208236386-c66a9b4e-4d0c-4f31-942a-4d968c4e1a31.png">
