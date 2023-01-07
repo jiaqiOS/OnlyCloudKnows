@@ -15,7 +15,7 @@
   },
   "content_scripts": [{
     "matches": ["http://*/*", "https://*/*"],
-    "js": ["src/content.js", "src/font_size.js"]
+    "js": ["libraries/mutation-summary.js", "src/content.js", "src/font_size.js"]
   }],
   "web_accessible_resources": [{
     "resources": ["fonts/*.woff2"],

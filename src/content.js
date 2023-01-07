@@ -55,6 +55,19 @@ const loadAndEncodeImage = (imageUrl, imageNode) => {
   }
 }
 
+let observer = new MutationSummary({
+  callback: updateImageElement,
+  queries: [{ element: 'img' }]
+});
+
+function updateImageElement(summaries) {
+  let imageSummary = summaries[0];
+  imageSummary.added.forEach((imageNode) => {
+    imageUrl = imageNode.src;
+    loadAndEncodeImage(imageUrl, imageNode);
+  });
+}
+
 const getImageElementWithSrcUrl = () => {
   const imgElArr = Array.from(document.getElementsByTagName('img'));
 
