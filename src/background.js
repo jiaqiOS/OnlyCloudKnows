@@ -1,6 +1,5 @@
 let apiKey;
 
-// https://www.youtube.com/watch?v=tc8DU14qX6I&list=PLRqwX-V7Uu6YxDKpFzf_2D84p0cyk4T7X&index=3
 const fetchApiKey = async () => {
   const response = await fetch('config.json');
   const object = await response.json();
@@ -14,13 +13,37 @@ fetchApiKey()
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (!request) { return; }
   if (request.action === 'fetchImage') {
-    console.log(request.imageData);
-    analyzeImage(request, sendResponse);
+    loadAndEncodeImage(request.data, sendResponse);
     return true;
   }
 });
 
-const analyzeImage = (request, sendResponse) => {
+const loadAndEncodeImage = (url, sendResponse) => {
+  fetch(url, {
+    method: 'GET',
+    mode: 'no-cors'
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.blob();
+    })
+    .then((blob) => new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => { resolve(reader.result); }
+      reader.onerror = error => reject(error);
+      reader.readAsDataURL(blob);
+    }))
+    .then((result) => {
+      const base64String = result.toString().replace(/^data:(.*,)?/, '');
+      return base64String;
+    })
+    .then(base64String => analyzeImage(base64String, sendResponse))
+    .catch(err => console.error(err.message));
+}
+
+const analyzeImage = (base64String, sendResponse) => {
   /** 
    * Set up the POST request.
    * NOTE: The Cloud Vision API is a REST API that uses HTTP POST operations 
@@ -32,7 +55,7 @@ const analyzeImage = (request, sendResponse) => {
     "requests": [
       {
         "image": {
-          "content": "" + request.imageData + "" // https://forum.uipath.com/t/how-to-use-variable-from-loop-in-http-request-body/201590/4
+          "content": "" + base64String + "" // https://forum.uipath.com/t/how-to-use-variable-from-loop-in-http-request-body/201590/4
         },
         "features": [
           {
@@ -62,30 +85,28 @@ const analyzeImage = (request, sendResponse) => {
   fetch(visionApiRequest, options)
     .then((annotateImageResponse) => {
       if (!annotateImageResponse.ok) {
-        console.error('Error');
-        return;
+        throw new Error(`HTTP error! status: ${response.status}`);
       }
-
-      annotateImageResponse.json() // The json function also returns a promise.
-        .then((labelDetection) => {
-          const labels = labelDetection.responses[0].labelAnnotations;
-
-          let predictions = [];
-
-          for (let i = 0; i < labels.length; i++) {
-            const label = labels[i].description;
-            const confidenceScore = Math.floor(labels[i].score * 100) + '%';
-
-            const regex = new RegExp('(?:^|\W)Art(?:$|\W)');
-            const hasArtLabel = regex.test(label);
-            let annotation = {};
-            if (hasArtLabel) {
-              annotation = confidenceScore + ' ' + label;
-              predictions.push(annotation);
-            }
-          }
-          sendResponse(predictions);
-        });
+      return annotateImageResponse.json();
     })
-    .catch(err => console.error('Error:', err.message));
+    .then((labelDetection) => {
+      const labels = labelDetection.responses[0].labelAnnotations;
+
+      let predictions = [];
+      if (typeof labels != 'undefined') {
+        for (let i = 0; i < labels.length; i++) {
+          const label = labels[i].description;
+          const confidenceScore = Math.floor(labels[i].score * 100) + '%';
+          const regex = new RegExp('(?:^|\W)Art(?:$|\W)');
+          const hasArtLabel = regex.test(label);
+          let annotation = {};
+          if (hasArtLabel) {
+            annotation = confidenceScore + ' ' + label;
+            predictions.push(annotation);
+          }
+        }
+      }
+      sendResponse(predictions);
+    })
+    .catch(err => console.error(err.message));
 }

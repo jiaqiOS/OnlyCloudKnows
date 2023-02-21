@@ -8,51 +8,16 @@
 const pathToFont = chrome.runtime.getURL('fonts/dejavu-sans-condensed-bold-webfont.woff2');
 const injectedFont = new FontFace('DejaVu Sans Condensed Bold', "url(" + pathToFont + ")");
 
-const passDataToBackground = async (base64, image) => {
-  const message = { action: 'fetchImage', imageData: base64 };
+const passImageUrlToBackground = async (imageUrl, imageNode) => {
+  const message = { action: 'fetchImage', data: imageUrl };
   chrome.runtime.sendMessage(message, (response) => {
-    if (response.length >= 0) {
-      if (typeof response[0] !== 'undefined') {
-        console.log(response[0]);
-        overlayPredictionTextOverImage(response[0], image);
-      }
+    if (typeof response != 'undefined' && response.length > 0) {
+      overlayPredictionTextOverImage(response[0], imageNode);
+    }
+    if (chrome.runtime.lastError) {
+      console.warn(chrome.runtime.lastError.message);
     }
   });
-}
-
-const loadAndEncodeImage = (imageUrl, imageNode) => {
-  /**
-   * NOTE: Serve the image from the cache by adding a CORS header.
-   * Add a GET parameter in the URL to send a new GET request for the image when fetching the required image,
-   * this will force the browser to not use the cached image from before.
-   * https://www.hacksoft.io/blog/handle-images-cors-error-in-chrome 
-   */
-  const corsImageModified = new Image();
-  corsImageModified.crossOrigin = 'Anonymous';
-  corsImageModified.src = imageUrl + '?not-from-cache-please';
-
-  corsImageModified.onerror = function () {
-    console.warn(`Could not load image from external source ${imageUrl}.`);
-    return;
-  };
-
-  // When image is loaded, render it to a canvas 
-  // and send image data as Base64 encoded text to the background script.
-  corsImageModified.onload = function () {
-    // const minSize = ;
-    // if ((imageNode.height && imageNode.height > minSize) || (imageNode.width && imageNode.width > minSize)) {
-
-    // https://github.com/GoogleCloudPlatform/machine-learning-browser-extension/blob/master/chrome/background.js
-    const canvas = document.createElement('canvas');
-    canvas.width = this.width;
-    canvas.height = this.height;
-    canvas.getContext('2d').drawImage(this, 0, 0);
-    const base64EncodedData = canvas.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, '');
-    console.log(base64EncodedData);
-    passDataToBackground(base64EncodedData, imageNode);
-    return;
-    // }
-  }
 }
 
 let observer = new MutationSummary({
@@ -64,17 +29,18 @@ function updateImageElement(summaries) {
   let imageSummary = summaries[0];
   imageSummary.added.forEach((imageNode) => {
     imageUrl = imageNode.src;
-    loadAndEncodeImage(imageUrl, imageNode);
+    passImageUrlToBackground(imageUrl, imageNode);
   });
 }
 
 const getImageElementWithSrcUrl = () => {
   const imgElArr = Array.from(document.getElementsByTagName('img'));
-
-  imgElArr.forEach((imageNode) => {
-    imageUrl = imageNode.src;
-    loadAndEncodeImage(imageUrl, imageNode);
-  });
+  if (imgElArr.length > 0) {
+    imgElArr.forEach((imageNode) => {
+      imageUrl = imageNode.src;
+      passImageUrlToBackground(imageUrl, imageNode);
+    });
+  }
 }
 
 const init = () => {
