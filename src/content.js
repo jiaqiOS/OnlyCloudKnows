@@ -8,11 +8,15 @@
 const pathToFont = chrome.runtime.getURL('fonts/dejavu-sans-condensed-bold-webfont.woff2');
 const injectedFont = new FontFace('DejaVu Sans Condensed Bold', "url(" + pathToFont + ")");
 
+const MIN_IMG_SIZE = 128;
+
 const passImageUrlToBackground = async (imageUrl, imageNode) => {
   const message = { action: 'fetchImage', data: imageUrl };
   chrome.runtime.sendMessage(message, (response) => {
     if (typeof response != 'undefined' && response.length > 0) {
-      overlayPredictionTextOverImage(response[0], imageNode);
+      if (imageNode.offsetWidth > MIN_IMG_SIZE || imageNode.offsetHeight > MIN_IMG_SIZE) {
+        overlayPredictionTextOverImage(response[0], imageNode);
+      }
     }
     if (chrome.runtime.lastError) {
       console.warn(chrome.runtime.lastError.message);
