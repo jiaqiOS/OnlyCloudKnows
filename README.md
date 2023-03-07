@@ -24,5 +24,12 @@ The ubiquitous cloud-shaped icon on the screen encapsulates an infinitely comple
 
 The Latin origin of the term data is the plural form of datum, meaning a "(thing) given." Art, however, is never given as merely a thing. _Only Cloud Knows_, a Chrome extension that detects images containing "art", as perceived through the lens of Google Cloud Vision AI, manifests how this emerging regime attempts to capture the incalculable and unknown in computationally legible form—the confidence labels returned from the Vision API overlay the images as each page loads. By operating within  industrial AI's wrong-headed perceptions, _Only Cloud Knows_ invites users to consider the biases and limits of machine intelligence: What lies beneath its threshold of recognizability? What is excluded from future possibilities? With this project, I aim to mirror how belief in the technical sightline has clouded our vision and to uncover how accelerating cognitive automation has surreptitiously short-circuited our sensory-noetic loop.
 
+## Install
+1. [Clone the repo](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository), or download zip (click the green `Code` button at the upper right of the repo contents, then select `Download ZIP` in the menu) and unzip it.
+2. Enter the `src` folder, rename `config.json-EXAMPLE` to `config.json`, and specify your API key. (To create an API key, follow the instructions [here](https://cloud.google.com/vision/docs/setup).)
+3. Type `chrome://extensions` in the Chrome Address bar, or select "Window > Extensions" from the menu bar.
+4. Ensure the `Developer mode` switch is turned on in the top right.
+5. Click the `Load Unpacked` button at the top left to select the `OnlyCloudKnows` folder.
+
 ## Acknowledgment
 Special thanks to Daniel C. Howe for the open-source code of his inspirational [AdLiPo](https://rednoise.org/daniel/pages/adlipo/) software, helpful critical comments on the prototype, and the ongoing dialogue on iterative development.
