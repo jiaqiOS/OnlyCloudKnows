@@ -25,26 +25,54 @@ const passImageUrlToBackground = async (imageUrl, imageNode) => {
 }
 
 let observer = new MutationSummary({
-  callback: updateImageElement,
-  queries: [{ element: 'img' }]
+  callback: trackLazyLoadImage,
+  queries: [{
+    element: 'img',
+  }, {
+    element: '*[style]'
+  }]
 });
 
-function updateImageElement(summaries) {
-  let imageSummary = summaries[0];
-  imageSummary.added.forEach((imageNode) => {
-    imageUrl = imageNode.src;
-    passImageUrlToBackground(imageUrl, imageNode);
+function trackLazyLoadImage(summaries) {
+  let imgSummary = summaries[0];
+  let styleSummary = summaries[1];
+
+  imgSummary.added.forEach((element) => {
+    imageUrl = element.currentSrc || element.src;
+    passImageUrlToBackground(imageUrl, element);
+  });
+
+  styleSummary.added.forEach((element) => {
+    if (element.style.backgroundImage) {
+      let property = element.style.backgroundImage;
+      let urlString = property.replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
+      let link = document.createElement('a');
+      link.href = urlString;
+      let backgroundImageUrl = link.href;
+      passImageUrlToBackground(backgroundImageUrl, element);
+    }
   });
 }
 
 const getImageElementWithSrcUrl = () => {
-  const imgElArr = Array.from(document.getElementsByTagName('img'));
-  if (imgElArr.length > 0) {
-    imgElArr.forEach((imageNode) => {
-      imageUrl = imageNode.src;
-      passImageUrlToBackground(imageUrl, imageNode);
-    });
-  }
+  // https://stackoverflow.com/a/52721409
+  const imgElArr = Array.from(document.getElementsByTagName('*'));
+  imgElArr.forEach((element) => {
+    if (element.tagName.toLowerCase() === 'img') {
+      let imageUrl = element.currentSrc || element.src; // Check loaded src.
+      passImageUrlToBackground(imageUrl, element);
+    }
+    else if (element.style.backgroundImage) {
+      let property = element.style.backgroundImage;
+      let urlString = property.replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
+      // https://stackoverflow.com/a/14781678
+      // To ensure the URL is valid.
+      let link = document.createElement('a');
+      link.href = urlString;
+      let backgroundImageUrl = link.href;
+      passImageUrlToBackground(backgroundImageUrl, element);
+    }
+  });
 }
 
 const init = () => {
