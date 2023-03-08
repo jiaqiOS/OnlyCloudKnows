@@ -85,6 +85,7 @@ init();
 // https://github.com/dhowe/AdLiPo/blob/4e1e31e1f61210d8692abc0386c2c7083d676b77/src/js/injectTemplate.js#L181
 const overlayPredictionTextOverImage = (textContent, image) => {
   const originalParent = image.parentElement; // https://stackoverflow.com/a/8685780/18513152
+  let nextSibling = image.nextElementSibling;
   const container = document.createElement('div');
   container.style.backgroundColor = 'transparent';
   container.style.border = '0';
@@ -95,6 +96,9 @@ const overlayPredictionTextOverImage = (textContent, image) => {
   // https://github.com/tensorflow/tfjs-examples/blob/ca7a661228234448284f0b3c723b41bb1ec27dcd/chrome-extension/src/content.js#L115
   originalParent.insertBefore(container, image);
   container.appendChild(image);
+  if (nextSibling != null) {
+    container.appendChild(nextSibling);
+  }
 
   const width = container.style.width;
   const height = container.style.height;
@@ -124,5 +128,4 @@ const overlayPredictionTextOverImage = (textContent, image) => {
   text.style.padding = padding;
   text.innerText = textContent;
   container.appendChild(text);
-  text.before(image);
 }
