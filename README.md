@@ -16,6 +16,10 @@
 
 ― Boris Groys, The Museum as a Cradle of Revolution
 
+"One of the best ways to recognize new, effective political forms is that you don’t like them. They are paradoxical. They are disgusting. It doesn’t belong to the dark side, but it points to something that is already there."
+
+— Akseli Virtanen
+
 "When Mussolini gives a speech in parliament, in 1925, taking full responsibility for the murderous chaos his regime has created, and challenging his opponents to remove him anyway, he is practicing decisionism at the expense of binary logic, which would dictate that if Mussolini is responsible, then he should resign. Instead, the dictator declares that he is responsible and that he will stay. Today it is our machines who make these speeches for us."
 
 ― Luciana Parisi, Reprogramming Decisionism
