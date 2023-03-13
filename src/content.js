@@ -24,6 +24,13 @@ const passImageUrlToBackground = async (imageUrl, imageNode) => {
   });
 }
 
+const ensureUrlIsFullyQualified = (urlString) => {
+  let link = document.createElement('a');
+  link.href = urlString;
+  imageUrl = link.href;
+  return imageUrl;
+}
+
 let observer = new MutationSummary({
   callback: trackLazyLoadImage,
   queries: [{
@@ -38,7 +45,8 @@ function trackLazyLoadImage(summaries) {
   let styleSummary = summaries[1];
 
   imgSummary.added.forEach((element) => {
-    imageUrl = element.currentSrc || element.src;
+    urlString = element.currentSrc || element.src;
+    let imageUrl = ensureUrlIsFullyQualified(urlString);
     passImageUrlToBackground(imageUrl, element);
   });
 
@@ -46,10 +54,8 @@ function trackLazyLoadImage(summaries) {
     if (element.style.backgroundImage) {
       let property = element.style.backgroundImage;
       let urlString = property.replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
-      let link = document.createElement('a');
-      link.href = urlString;
-      let backgroundImageUrl = link.href;
-      passImageUrlToBackground(backgroundImageUrl, element);
+      let imageUrl = ensureUrlIsFullyQualified(urlString);
+      passImageUrlToBackground(imageUrl, element);
     }
   });
 }
@@ -59,18 +65,15 @@ const getImageElementWithSrcUrl = () => {
   const imgElArr = Array.from(document.getElementsByTagName('*'));
   imgElArr.forEach((element) => {
     if (element.tagName.toLowerCase() === 'img') {
-      let imageUrl = element.currentSrc || element.src; // Check loaded src.
+      let urlString = element.currentSrc || element.src; // Check loaded src.
+      let imageUrl = ensureUrlIsFullyQualified(urlString);
       passImageUrlToBackground(imageUrl, element);
     }
     else if (element.style.backgroundImage) {
       let property = element.style.backgroundImage;
       let urlString = property.replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
-      // https://stackoverflow.com/a/14781678
-      // To ensure the URL is valid.
-      let link = document.createElement('a');
-      link.href = urlString;
-      let backgroundImageUrl = link.href;
-      passImageUrlToBackground(backgroundImageUrl, element);
+      let imageUrl = ensureUrlIsFullyQualified(urlString);
+      passImageUrlToBackground(imageUrl, element);
     }
   });
 }
