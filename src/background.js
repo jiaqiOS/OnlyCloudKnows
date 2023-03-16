@@ -44,18 +44,11 @@ const loadAndEncodeImage = (url, sendResponse) => {
 }
 
 const analyzeImage = (base64String, sendResponse) => {
-  /** 
-   * Set up the POST request.
-   * NOTE: The Cloud Vision API is a REST API that uses HTTP POST operations 
-   * to perform data analysis on images you send in the request.
-   * https://cloud.google.com/vision/docs/request#json_request_format
-   * https://cloud.google.com/vision/docs/base64#mac-osx
-   */
   const annotateImageRequest = {
     "requests": [
       {
         "image": {
-          "content": "" + base64String + "" // https://forum.uipath.com/t/how-to-use-variable-from-loop-in-http-request-body/201590/4
+          "content": "" + base64String + "" 
         },
         "features": [
           {
@@ -67,8 +60,6 @@ const analyzeImage = (base64String, sendResponse) => {
     ]
   }
 
-  // https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
-  // https://www.youtube.com/watch?v=Kw5tC5nQMRY&list=PLRqwX-V7Uu6YxDKpFzf_2D84p0cyk4T7X&index=11
   const options = {
     method: 'POST',
     mode: 'cors',
@@ -80,7 +71,7 @@ const analyzeImage = (base64String, sendResponse) => {
   };
 
   const visionApiEndpoint = 'https://vision.googleapis.com/v1/images:annotate?key=';
-  const visionApiRequest = visionApiEndpoint + apiKey; // https://cloud.google.com/docs/authentication/api-keys
+  const visionApiRequest = visionApiEndpoint + apiKey; 
 
   fetch(visionApiRequest, options)
     .then((annotateImageResponse) => {

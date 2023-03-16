@@ -1,10 +1,3 @@
-/**
- * https://stackoverflow.com/a/49821276/18513152
- * https://developer.mozilla.org/en-US/docs/Web/API/FontFaceSet/add
- * https://developer.chrome.com/docs/extensions/reference/runtime/#method-getURL
- * https://github.com/web-fonts/dejavu-sans-condensed-bold
- * Another way to add fonts, injecting a style node, would cause an obvious delay.
- */
 const pathToFont = chrome.runtime.getURL('fonts/dejavu-sans-condensed-bold-webfont.woff2');
 const injectedFont = new FontFace('DejaVu Sans Condensed Bold', "url(" + pathToFont + ")");
 
@@ -61,7 +54,6 @@ function trackLazyLoadImage(summaries) {
 }
 
 const getImageElementWithSrcUrl = () => {
-  // https://stackoverflow.com/a/52721409
   const imgElArr = Array.from(document.getElementsByTagName('*'));
   imgElArr.forEach((element) => {
     if (element.tagName.toLowerCase() === 'img') {
@@ -80,14 +72,12 @@ const getImageElementWithSrcUrl = () => {
 
 const init = () => {
   document.fonts.add(injectedFont);
-  // https://developer.mozilla.org/en-US/docs/Web/API/FontFace
   injectedFont.load().then(() => getImageElementWithSrcUrl(), (err) => { console.error(err) });
 }
 init();
 
-// https://github.com/dhowe/AdLiPo/blob/4e1e31e1f61210d8692abc0386c2c7083d676b77/src/js/injectTemplate.js#L181
 const overlayPredictionTextOverImage = (textContent, image) => {
-  const originalParent = image.parentElement; // https://stackoverflow.com/a/8685780/18513152
+  const originalParent = image.parentElement;
   let nextSibling = image.nextElementSibling;
   const container = document.createElement('div');
   container.style.backgroundColor = 'transparent';
@@ -96,7 +86,7 @@ const overlayPredictionTextOverImage = (textContent, image) => {
   container.style.height = image.offsetHeight + 'px';
   container.style.position = 'relative';
   image.style.position = 'absolute';
-  // https://github.com/tensorflow/tfjs-examples/blob/ca7a661228234448284f0b3c723b41bb1ec27dcd/chrome-extension/src/content.js#L115
+
   originalParent.insertBefore(container, image);
   container.appendChild(image);
   if (nextSibling != null) {
@@ -112,7 +102,6 @@ const overlayPredictionTextOverImage = (textContent, image) => {
   const horizontalPadding = Math.min(parseInt(Math.max(2, parseInt(width) / 15)), 20);
   const verticalPadding = Math.min(parseInt(Math.max(2, parseInt(height) / 15)), 20);
   const padding = `${verticalPadding}px ${horizontalPadding}px`;
-  // https://github.com/dhowe/AdLiPo/blob/4e1e31e1f61210d8692abc0386c2c7083d676b77/src/js/injectTemplate.js#L268
   const fontSize = computeFontSize(textContent, width, height, font, textAlign, wordBreak, lineHeight, padding, 100);
 
   container.style.color = 'red';
