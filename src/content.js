@@ -1,15 +1,11 @@
 const pathToFont = chrome.runtime.getURL('fonts/dejavu-sans-condensed-bold-webfont.woff2');
 const injectedFont = new FontFace('DejaVu Sans Condensed Bold', "url(" + pathToFont + ")");
 
-const MIN_IMG_SIZE = 128;
-
 const passImageUrlToBackground = async (imageUrl, imageNode) => {
   const message = { action: 'fetchImage', data: imageUrl };
   chrome.runtime.sendMessage(message, (response) => {
     if (typeof response != 'undefined' && response.length > 0) {
-      if (imageNode.offsetWidth > MIN_IMG_SIZE || imageNode.offsetHeight > MIN_IMG_SIZE) {
-        overlayPredictionTextOverImage(response[0], imageNode);
-      }
+      overlayPredictionTextOverImage(response[0], imageNode);
     }
     if (chrome.runtime.lastError) {
       console.warn(chrome.runtime.lastError.message);
@@ -24,55 +20,50 @@ const ensureUrlIsFullyQualified = (urlString) => {
   return imageUrl;
 }
 
-let observer = new MutationSummary({
-  callback: trackLazyLoadImage,
-  queries: [{
-    element: 'img',
-  }, {
-    element: '*[style]'
-  }]
-});
+const getImageElementWithUrl = (element) => {
+  if (element.offsetWidth === undefined || element.offsetHeight === undefined) { return; }
+  if (element.offsetWidth < 60 || element.offsetHeight < 60) { return; }
 
-function trackLazyLoadImage(summaries) {
-  let imgSummary = summaries[0];
-  let styleSummary = summaries[1];
-
-  imgSummary.added.forEach((element) => {
-    urlString = element.currentSrc || element.src;
+  if (element.tagName.toLowerCase() === 'img') {
+    let urlString = element.currentSrc || element.src;
     let imageUrl = ensureUrlIsFullyQualified(urlString);
     passImageUrlToBackground(imageUrl, element);
-  });
-
-  styleSummary.added.forEach((element) => {
-    if (element.style.backgroundImage) {
-      let property = element.style.backgroundImage;
-      let urlString = property.replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
-      let imageUrl = ensureUrlIsFullyQualified(urlString);
-      passImageUrlToBackground(imageUrl, element);
-    }
-  });
+  }
+  else if (element.style.backgroundImage) {
+    let property = element.style.backgroundImage;
+    let urlString = property.replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
+    let imageUrl = ensureUrlIsFullyQualified(urlString);
+    passImageUrlToBackground(imageUrl, element);
+  }
 }
 
-const getImageElementWithSrcUrl = () => {
-  const imgElArr = Array.from(document.getElementsByTagName('*'));
-  imgElArr.forEach((element) => {
-    if (element.tagName.toLowerCase() === 'img') {
-      let urlString = element.currentSrc || element.src; // Check loaded src.
-      let imageUrl = ensureUrlIsFullyQualified(urlString);
-      passImageUrlToBackground(imageUrl, element);
-    }
-    else if (element.style.backgroundImage) {
-      let property = element.style.backgroundImage;
-      let urlString = property.replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
-      let imageUrl = ensureUrlIsFullyQualified(urlString);
-      passImageUrlToBackground(imageUrl, element);
-    }
+let mutationObserver = new MutationSummary({
+  callback: trackLazyLoading,
+  queries: [{ element: 'img, *[style]' }]
+});
+
+function trackLazyLoading(summaries) {
+  let summary = summaries[0];
+  checkVisibility(summary.added);
+}
+
+const checkVisibility = (targets) => {
+  let intersectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        const element = entry.target;
+        getImageElementWithUrl(element);
+        intersectionObserver.unobserve(element);
+      }
+    });
   });
+  targets.forEach(el => { intersectionObserver.observe(el); })
 }
 
 const init = () => {
   document.fonts.add(injectedFont);
-  injectedFont.load().then(() => getImageElementWithSrcUrl(), (err) => { console.error(err) });
+  let targetElements = document.querySelectorAll('img, *[style]');
+  injectedFont.load().then(() => checkVisibility(targetElements), (err) => { console.error(err) });
 }
 init();
 
@@ -86,7 +77,6 @@ const overlayPredictionTextOverImage = (textContent, image) => {
   container.style.height = image.offsetHeight + 'px';
   container.style.position = 'relative';
   image.style.position = 'absolute';
-
   originalParent.insertBefore(container, image);
   container.appendChild(image);
   if (nextSibling != null) {
