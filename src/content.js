@@ -13,26 +13,19 @@ const passImageUrlToBackground = async (imageUrl, imageNode) => {
   });
 }
 
-const ensureUrlIsFullyQualified = (urlString) => {
-  let link = document.createElement('a');
-  link.href = urlString;
-  imageUrl = link.href;
-  return imageUrl;
-}
-
 const getImageElementWithUrl = (element) => {
   if (element.offsetWidth === undefined || element.offsetHeight === undefined) { return; }
   if (element.offsetWidth < 60 || element.offsetHeight < 60) { return; }
 
   if (element.tagName.toLowerCase() === 'img') {
     let urlString = element.currentSrc || element.src;
-    let imageUrl = ensureUrlIsFullyQualified(urlString);
+    let imageUrl = new URL(urlString, window.location.href).href;
     passImageUrlToBackground(imageUrl, element);
   }
   else if (element.style.backgroundImage) {
     let property = element.style.backgroundImage;
     let urlString = property.replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
-    let imageUrl = ensureUrlIsFullyQualified(urlString);
+    let imageUrl = new URL(urlString, window.location.href).href;
     passImageUrlToBackground(imageUrl, element);
   }
 }
