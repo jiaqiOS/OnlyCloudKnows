@@ -2,11 +2,7 @@
 
 [Preview video](https://vimeo.com/822459319?share=copy)
 
-<img width="1624" alt="artists-shit" src="https://user-images.githubusercontent.com/96087431/211147470-60ebc1ed-f725-4e7d-8a35-cddc7f7b597c.png">
-<img width="1624" alt="white-cube" src="https://user-images.githubusercontent.com/96087431/223461180-e2c24b7c-b6e3-4ede-9d60-71ed9f1dc1c1.png">
-<img width="1624" alt="walker-exclusives" src="https://user-images.githubusercontent.com/96087431/223461241-ff5cf12f-258c-433a-9aeb-ec5ae8d943cf.png">
-<img width="1624" alt="whitney-artport" src="https://user-images.githubusercontent.com/96087431/223461262-4099d302-93fb-4e7b-8fd2-dce38678e24f.png">
-<img width="1624" alt="next-rembrandt" src="https://user-images.githubusercontent.com/96087431/223461284-93c2c582-b803-4479-a9aa-21943d259a62.png">
+![ock](https://github.com/JiaqiLU0912/OnlyCloudKnows/assets/96087431/46eafadb-c4df-4345-9339-331eeb084c25)
 
 ## Description
 
