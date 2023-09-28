@@ -5,7 +5,7 @@ const passImageUrlToBackground = async (imageUrl, imageNode) => {
   const message = { action: 'fetchImage', data: imageUrl };
   chrome.runtime.sendMessage(message, (response) => {
     if (typeof response != 'undefined' && response.length > 0) {
-      overlayPredictionTextOverImage(response[0], imageNode);
+      overlayPredictionTextOverImage(response, imageNode);
     }
     if (chrome.runtime.lastError) {
       console.warn(chrome.runtime.lastError.message);
@@ -60,47 +60,38 @@ const init = () => {
 }
 init();
 
-const overlayPredictionTextOverImage = (textContent, image) => {
-  const originalParent = image.parentElement;
-  let nextSibling = image.nextElementSibling;
+const overlayPredictionTextOverImage = async (textContent, image) => {
   const container = document.createElement('div');
+  container.style.position = 'relative';
   container.style.backgroundColor = 'transparent';
   container.style.border = '0';
-  container.style.width = image.offsetWidth + 'px';
-  container.style.height = image.offsetHeight + 'px';
-  container.style.position = 'relative';
-  image.style.position = 'absolute';
-  originalParent.insertBefore(container, image);
-  container.appendChild(image);
-  if (nextSibling != null) {
-    container.appendChild(nextSibling);
-  }
-
-  const width = container.style.width;
-  const height = container.style.height;
-  const font = 'DejaVu Sans Condensed Bold';
-  const textAlign = 'left';
-  const wordBreak = 'normal';
-  const lineHeight = 'normal';
-  const horizontalPadding = Math.min(parseInt(Math.max(2, parseInt(width) / 15)), 20);
-  const verticalPadding = Math.min(parseInt(Math.max(2, parseInt(height) / 15)), 20);
-  const padding = `${verticalPadding}px ${horizontalPadding}px`;
-  const fontSize = computeFontSize(textContent, width, height, font, textAlign, wordBreak, lineHeight, padding, 100);
-
-  container.style.color = 'red';
-  container.style.fontFamily = font;
-  container.style.fontSize = fontSize;
-  container.style.fontWeight = 'normal';
-  container.style.textAlign = textAlign;
-  container.style.wordBreak = wordBreak;
-  container.style.lineHeight = lineHeight;
-  container.style.display = 'table';
 
   const text = document.createElement('div');
-  text.style.display = 'table-cell';
-  text.style.verticalAlign = 'middle';
+  text.style.width = image.offsetWidth + 'px';
+  text.style.height = image.offsetHeight + 'px';
   text.style.position = 'absolute';
-  text.style.padding = padding;
-  text.innerText = textContent;
+  text.style.left = '0px';
+  text.style.zIndex = '100';
+  text.style.color = 'red';
+  text.style.fontFamily = 'DejaVu Sans Condensed Bold';
+  text.style.lineHeight = 'normal';
+  text.style.textAlign = 'start';
+  text.style.overflowWrap = 'normal';
+
+  const originalParent = image.parentElement;
+  originalParent.insertBefore(container, image);
+  container.appendChild(image);
   container.appendChild(text);
+
+  const textChild = document.createElement('span');
+  text.appendChild(textChild);
+
+  let counter = 0;
+  setInterval(() => {
+    counter++;
+    if (counter >= textContent.length) { counter = 0; }
+    textChild.innerText = textContent[counter];
+    TextFill(text, { minFontPixels: 1, maxFontPixels: 300, autoResize: true });
+    text.style.top = (image.offsetHeight - textChild.offsetHeight) * 0.5 + 'px';
+  }, 1000);
 }

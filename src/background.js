@@ -48,7 +48,7 @@ const analyzeImage = (base64String, sendResponse) => {
     "requests": [
       {
         "image": {
-          "content": "" + base64String + "" 
+          "content": "" + base64String + ""
         },
         "features": [
           {
@@ -71,7 +71,7 @@ const analyzeImage = (base64String, sendResponse) => {
   };
 
   const visionApiEndpoint = 'https://vision.googleapis.com/v1/images:annotate?key=';
-  const visionApiRequest = visionApiEndpoint + apiKey; 
+  const visionApiRequest = visionApiEndpoint + apiKey;
 
   fetch(visionApiRequest, options)
     .then((annotateImageResponse) => {
@@ -87,11 +87,10 @@ const analyzeImage = (base64String, sendResponse) => {
       if (typeof labels != 'undefined') {
         for (let i = 0; i < labels.length; i++) {
           const label = labels[i].description;
-          const confidenceScore = Math.floor(labels[i].score * 100) + '%';
-          const regex = new RegExp('(?:^|\W)Art(?:$|\W)');
-          const hasArtLabel = regex.test(label);
+          // console.log(label);
+          const confidenceScore = (labels[i].score * 100).toFixed(1) + '%';
           let annotation = {};
-          if (hasArtLabel) {
+          if (label === 'Art' || label === 'Artist' || label === 'Artwork' || label === 'Art exhibition' || label === 'Creative arts' || label === 'Fractal art' || label === 'Environmental art' || label === 'Line art' || label === 'Modern art' || label === 'Plastic arts' || label === 'Performance art' || label === 'Performing arts' || label === 'Street art' || label === 'Visual arts') {
             annotation = confidenceScore + ' ' + label;
             predictions.push(annotation);
           }
