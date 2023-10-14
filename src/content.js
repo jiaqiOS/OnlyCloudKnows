@@ -77,6 +77,7 @@ const overlayPredictionTextOverImage = async (textContent, image) => {
   text.style.lineHeight = 'normal';
   text.style.textAlign = 'start';
   text.style.overflowWrap = 'normal';
+  text.style.wordBreak = 'normal';
 
   const originalParent = image.parentElement;
   originalParent.insertBefore(container, image);
