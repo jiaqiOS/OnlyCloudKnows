@@ -1,6 +1,6 @@
 {
   "name": "Only Cloud Knows",
-  "description": "Decides what is art by Google Cloud AI.",
+  "description": "",
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhK55juK0R2l9WUCdM7fDvTZFPm8+3JFqejjmq3rH8jcASCWw7FL4HZ2jITc6WhHZP7dW75YxLUAA4KbCH0+n3z3lCwo0Pge0izac97wl7fIog/kVoRMDJPUcZg0lfm7MM49T+a+9uG3TFtUpaTGs2Vv60vDtNwBX3ghDRorPSbDSqmMURg0n5txew9J6wxQhjFtIuWd1jjPw48NGtbW4V4uzzovgMjAhE8yCDD3DKok0bVrT3b6DH0/xhQ9rvmyVLL/dOadZ5K36P5jbMF2VSXZEsHmZp9R6jUiPF8VG6gEg77KH9u3QemqK/vVmHWPdQO8nxxt632MvNrRBJ41C0wIDAQAB",
   "version": "0.0.2",
   "manifest_version": 3,
