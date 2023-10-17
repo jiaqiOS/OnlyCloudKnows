@@ -42,5 +42,7 @@ The ubiquitous cloud-shaped icon on our screens encapsulates an infinitely compl
 ## Acknowledgment
 Special thanks to [Daniel C. Howe](https://rednoise.org/daniel/) for the open-source code of his inspirational [AdLiPo](https://rednoise.org/daniel/pages/adlipo/) software, helpful critical comments on the prototype, and the ongoing dialogue on iterative development.
 
+This project is supported by Raiden INST's Emerging Sci-Tech Artist Awards.
+
 ## License
 Only Cloud Knows / 只有云知道 is licensed under a [Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License](https://creativecommons.org/licenses/by-nc-nd/4.0/). 
