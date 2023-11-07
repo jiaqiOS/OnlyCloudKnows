@@ -1,6 +1,6 @@
 # Only Cloud Knows
 
-[Preview video](https://vimeo.com/872448154)
+[Video Documentation](https://vimeo.com/872448154)
 
 ## Description
 
