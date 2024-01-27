@@ -2,6 +2,8 @@
 
 [Video Documentation](https://vimeo.com/872448154)
 
+Note: this video is a work in progress
+
 ## Description
 
 "In fact, art always attempted to represent the greatest possible power, the power that ruled the world in its totality..."
