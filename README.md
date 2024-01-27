@@ -40,9 +40,9 @@ The ubiquitous cloud-shaped icon on our screens encapsulates an infinitely compl
 5. Click the `Load Unpacked` button at the top left to select the `OnlyCloudKnows` folder.
 
 ## Acknowledgment
-Special thanks to [Daniel C. Howe](https://rednoise.org/daniel/) for the open-source code of his inspirational [AdLiPo](https://rednoise.org/daniel/pages/adlipo/) software, helpful critical comments on the prototype, and the ongoing dialogue on iterative development.
+Special thanks to [Daniel C. Howe](https://rednoise.org/daniel/) for his inspirational [AdLiPo](https://rednoise.org/daniel/pages/adlipo/) software, and helpful critical comments on the prototype.
 
-This project is supported by Raiden INST's Emerging Sci-Tech Artist Awards.
+This project is supported by Raiden INST's Emerging Sci-Tech Artist Awards 2nd season in 2023. Thanks to Yu Han, Songhao Huang, and Xueqing Yu.
 
 ## License
 Only Cloud Knows / 只有云知道 is licensed under a [Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License](https://creativecommons.org/licenses/by-nc-nd/4.0/). 
