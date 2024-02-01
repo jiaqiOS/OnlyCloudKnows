@@ -65,6 +65,8 @@ const overlayPredictionTextOverImage = async (textContent, image) => {
   container.style.position = 'relative';
   container.style.backgroundColor = 'transparent';
   container.style.border = '0';
+  container.style.textTransform = 'capitalize';
+  container.style.fontStyle = 'normal';
 
   const text = document.createElement('div');
   text.style.width = image.offsetWidth + 'px';
