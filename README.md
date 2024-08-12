@@ -41,6 +41,9 @@ The ubiquitous cloud-shaped icon on our screens encapsulates an infinitely compl
 4. Ensure the `Developer mode` switch is turned on in the top right.
 5. Click the `Load Unpacked` button at the top left to select the `OnlyCloudKnows` folder.
 
+## Setup
+![setup](https://github.com/user-attachments/assets/6d471a7f-9402-4a56-8a4f-ea513d19bcda)
+
 ## Acknowledgment
 Special thanks to [Daniel C. Howe](https://rednoise.org/daniel/) for his inspirational [AdLiPo](https://rednoise.org/daniel/pages/adlipo/) software, and helpful critical comments on the prototype.
 
