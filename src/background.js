@@ -10,54 +10,17 @@ fetchApiKey()
   .then(response => console.log('gotApiKey'))
   .catch(err => console.error(err.message));
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (!request) { return; }
-  if (request.action === 'fetchImage') {
-    loadAndEncodeImage(request.data, sendResponse);
-    return true;
-  }
-});
-
-const loadAndEncodeImage = (url, sendResponse) => {
-  fetch(url, {
-    method: 'GET',
-    mode: 'no-cors'
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      return response.blob();
-    })
-    .then((blob) => new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => { resolve(reader.result); }
-      reader.onerror = error => reject(error);
-      reader.readAsDataURL(blob);
-    }))
-    .then((result) => {
-      const base64String = result.toString().replace(/^data:(.*,)?/, '');
-      return base64String;
-    })
-    .then(base64String => analyzeImage(base64String, sendResponse))
-    .catch(err => console.error(err.message));
-}
-
 const analyzeImage = (base64String, sendResponse) => {
   const annotateImageRequest = {
-    "requests": [
-      {
-        "image": {
-          "content": "" + base64String + ""
-        },
-        "features": [
-          {
-            "type": "LABEL_DETECTION",
-            "maxResults": 50
-          }
-        ]
-      }
-    ]
+    "requests": [{
+      "image": {
+        "content": "" + base64String + ""
+      },
+      "features": [{
+        "type": "LABEL_DETECTION",
+        "maxResults": 50
+      }]
+    }]
   }
 
   const options = {
@@ -100,3 +63,40 @@ const analyzeImage = (base64String, sendResponse) => {
     })
     .catch(err => console.error(err.message));
 }
+
+const loadAndEncodeImage = (url, sendResponse) => {
+  fetch(url, {
+      method: 'GET',
+      mode: 'no-cors'
+    })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.blob();
+    })
+    .then((blob) => new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        resolve(reader.result);
+      }
+      reader.onerror = error => reject(error);
+      reader.readAsDataURL(blob);
+    }))
+    .then((result) => {
+      const base64String = result.toString().replace(/^data:(.*,)?/, '');
+      return base64String;
+    })
+    .then(base64String => analyzeImage(base64String, sendResponse))
+    .catch(err => console.error(err.message));
+}
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (!request) {
+    return;
+  }
+  if (request.action === 'fetchImage') {
+    loadAndEncodeImage(request.data, sendResponse);
+    return true;
+  }
+});
