@@ -1,26 +1,29 @@
-const pathToFont = chrome.runtime.getURL('fonts/dejavu-sans-condensed-bold-webfont.woff2');
-const injectedFont = new FontFace('DejaVu Sans Condensed Bold', "url(" + pathToFont + ")");
+const PATH_TO_FONT = chrome.runtime.getURL('fonts/dejavu-sans-condensed-bold-webfont.woff2');
 
-const overlayPredictionTextOverImage = (textContent, image) => {
+const overlayAnnotationsOverImage = (annotations, image) => {
   const container = document.createElement('div');
-  container.style.position = 'relative';
-  container.style.backgroundColor = 'transparent';
-  container.style.border = '0';
-  container.style.textTransform = 'capitalize';
-  container.style.fontStyle = 'normal';
+  Object.assign(container.style, {
+    position: 'relative',
+    border: '0',
+    backgroundColor: 'transparent'
+  });
 
   const text = document.createElement('div');
-  text.style.width = image.offsetWidth + 'px';
-  text.style.height = image.offsetHeight + 'px';
-  text.style.position = 'absolute';
-  text.style.left = '0px';
-  text.style.zIndex = '100';
-  text.style.color = 'red';
-  text.style.fontFamily = 'DejaVu Sans Condensed Bold';
-  text.style.lineHeight = 'normal';
-  text.style.textAlign = 'start';
-  text.style.overflowWrap = 'normal';
-  text.style.wordBreak = 'normal';
+  Object.assign(text.style, {
+    position: 'absolute',
+    zIndex: '100',
+    width: `${image.offsetWidth}px`,
+    height: `${image.offsetHeight}px`,
+    left: '0',
+    color: 'red',
+    fontFamily: 'DejaVu Sans Condensed Bold',
+    fontStyle: 'normal',
+    textTransform: 'capitalize',
+    textAlign: 'start',
+    lineHeight: 'normal',
+    wordBreak: 'normal',
+    overflowWrap: 'normal'
+  });
 
   const originalParent = image.parentElement;
   originalParent.insertBefore(container, image);
@@ -33,86 +36,93 @@ const overlayPredictionTextOverImage = (textContent, image) => {
   let counter = 0;
   setInterval(() => {
     counter++;
-    if (counter >= textContent.length) {
+    if (counter >= annotations.length) {
       counter = 0;
     }
-    textChild.innerText = textContent[counter];
+    textChild.innerText = annotations[counter];
     TextFill(text, {
       minFontPixels: 1,
       maxFontPixels: 300,
       autoResize: true
     });
-    text.style.top = (image.offsetHeight - textChild.offsetHeight) * 0.5 + 'px';
+    text.style.top = `${(image.offsetHeight - textChild.offsetHeight) * 0.5}px`;
   }, 1000);
-}
+};
 
-const passImageUrlToBackground = (imageUrl, imageNode) => {
+const passImageUrlToBackground = (imageUrl, imageElement) => {
   const message = {
     action: 'fetchImage',
     data: imageUrl
   };
+
   chrome.runtime.sendMessage(message, (response) => {
-    if (typeof response != 'undefined' && response.length > 0) {
-      overlayPredictionTextOverImage(response, imageNode);
-    }
     if (chrome.runtime.lastError) {
       console.warn(chrome.runtime.lastError.message);
+    } else if (response && response.length > 0) {
+      overlayAnnotationsOverImage(response, imageElement);
     }
   });
-}
+};
 
 const getImageElementWithUrl = (element) => {
-  if (element.offsetWidth === undefined || element.offsetHeight === undefined) {
-    return;
-  }
-  if (element.offsetWidth < 60 || element.offsetHeight < 60) {
-    return;
-  }
+  if (element.offsetWidth < 60 || element.offsetHeight < 60) return;
 
+  let imageUrl = '';
   if (element.tagName.toLowerCase() === 'img') {
-    let urlString = element.currentSrc || element.src;
-    let imageUrl = new URL(urlString, window.location.href).href;
-    passImageUrlToBackground(imageUrl, element);
+    imageUrl = new URL(element.currentSrc || element.src, window.location.href).href;
   } else if (element.style.backgroundImage) {
-    let property = element.style.backgroundImage;
-    let urlString = property.replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
-    let imageUrl = new URL(urlString, window.location.href).href;
+    const backgroundImageUrl = element.style.backgroundImage.replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
+    imageUrl = new URL(backgroundImageUrl, window.location.href).href;
+  }
+
+  if (imageUrl) {
     passImageUrlToBackground(imageUrl, element);
   }
-}
+};
 
-const checkVisibility = (targets) => {
-  let intersectionObserver = new IntersectionObserver((entries) => {
+const checkVisibility = (targetElements) => {
+  const observer = new IntersectionObserver((entries, observer) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        const element = entry.target;
-        getImageElementWithUrl(element);
-        intersectionObserver.unobserve(element);
+        getImageElementWithUrl(entry.target);
+        observer.unobserve(entry.target);
       }
     });
+  }, {
+    root: null,
+    rootMargin: '0px',
+    threshold: 0.5
   });
-  targets.forEach(el => {
-    intersectionObserver.observe(el);
-  })
-}
 
-function trackLazyLoading(summaries) {
-  let summary = summaries[0];
+  targetElements.forEach((el) => {
+    observer.observe(el);
+  });
+};
+
+const trackLazyLoading = (summaries) => {
+  const summary = summaries[0];
   checkVisibility(summary.added);
-}
+};
 
-let mutationObserver = new MutationSummary({
-  callback: trackLazyLoading,
-  queries: [{
-    element: 'img, *[style]'
-  }]
-});
+const setup = async () => {
+  const font = new FontFace('DejaVu Sans Condensed Bold', `url(${PATH_TO_FONT})`);
 
-const init = () => {
-  document.fonts.add(injectedFont);
-  let targetElements = document.querySelectorAll('img, *[style]');
-  injectedFont.load().then(() => checkVisibility(targetElements), (err) => {
-    console.error(err)
-  });
-}
-init();
+  try {
+    await font.load();
+    document.fonts.add(font);
+
+    const elements = document.querySelectorAll('img, *[style]');
+    checkVisibility(elements);
+
+    const mutationObserver = new MutationSummary({
+      callback: trackLazyLoading,
+      queries: [{
+        element: 'img, *[style]'
+      }]
+    });
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+setup();
