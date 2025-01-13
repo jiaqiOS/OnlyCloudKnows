@@ -1,4 +1,5 @@
 const PATH_TO_FONT = chrome.runtime.getURL('fonts/dejavu-sans-condensed-bold-webfont.woff2');
+let mutationObserver, intersectionObservers = [];
 
 const overlayAnnotationsOverImage = (annotations, image) => {
   const container = document.createElement('div');
@@ -9,6 +10,7 @@ const overlayAnnotationsOverImage = (annotations, image) => {
   });
 
   const text = document.createElement('div');
+  text.className = 'annotations';
   Object.assign(text.style, {
     position: 'absolute',
     zIndex: '100',
@@ -97,6 +99,8 @@ const checkVisibility = (targetElements) => {
   targetElements.forEach((el) => {
     observer.observe(el);
   });
+
+  intersectionObservers.push(observer);
 };
 
 const trackLazyLoading = (summaries) => {
@@ -114,7 +118,7 @@ const setup = async () => {
     const elements = document.querySelectorAll('img, *[style]');
     checkVisibility(elements);
 
-    const mutationObserver = new MutationSummary({
+    mutationObserver = new MutationSummary({
       callback: trackLazyLoading,
       queries: [{
         element: 'img, *[style]'
@@ -125,4 +129,35 @@ const setup = async () => {
   }
 };
 
-setup();
+const teardown = () => {
+  if (mutationObserver) {
+    mutationObserver.disconnect();
+    mutationObserver = null;
+  }
+
+  intersectionObservers.forEach(observer => observer.disconnect());
+  intersectionObservers = [];
+
+  const annotations = document.getElementsByClassName('annotations');
+  while (annotations.length > 0) {
+    annotations[0].parentNode.removeChild(annotations[0]);
+  }
+};
+
+chrome.storage.local.get(['status']).then((storedSetting) => {
+  if (storedSetting.status) {
+    setup();
+  }
+});
+
+chrome.storage.onChanged.addListener((changes) => {
+  const changedItems = Object.keys(changes);
+
+  for (const item of changedItems) {
+    if (changes[item].newValue) {
+      setup();
+    } else {
+      teardown();
+    }
+  }
+});

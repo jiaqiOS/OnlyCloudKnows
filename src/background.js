@@ -101,3 +101,29 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     return true;
   }
 });
+
+const toggleBadgeStatus = (isEnabled) => {
+  chrome.action.setBadgeBackgroundColor({ color: 'white' });
+  const text = isEnabled ? '%Art' : 'Off';
+  const textColor = isEnabled ? 'red' : 'blue';
+  chrome.action.setBadgeText({ text });
+  chrome.action.setBadgeTextColor({ color: textColor });
+};
+
+const updateExtensionStatus = (isEnabled) => {
+  chrome.storage.local.set({ status: isEnabled }).then((() => {
+    toggleBadgeStatus(isEnabled);
+  }));
+};
+
+chrome.storage.local.get(['status']).then((defaultSetting) => {
+  if (!defaultSetting.status || !!defaultSetting.status) {
+    updateExtensionStatus(false);
+  }
+});
+
+chrome.action.onClicked.addListener((tab) => {
+  chrome.storage.local.get(['status']).then((storedSetting) => {
+    updateExtensionStatus(!storedSetting.status);
+  });
+});
