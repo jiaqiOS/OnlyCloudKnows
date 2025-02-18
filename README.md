@@ -42,7 +42,8 @@ The ubiquitous cloud-shaped icon on our screens encapsulates an infinitely compl
 5. Click the `Load Unpacked` button at the top left to select the `OnlyCloudKnows` folder.
 
 ## Setup
-![setup](https://github.com/user-attachments/assets/6d471a7f-9402-4a56-8a4f-ea513d19bcda)
+
+![ockSetup](https://github.com/user-attachments/assets/c86d5c9d-5fbb-4a57-be1b-9d0dc55b386b)
 
 ## Acknowledgment
 Special thanks to [Daniel C. Howe](https://rednoise.org/daniel/) for his inspirational [AdLiPo](https://rednoise.org/daniel/pages/adlipo/) software, and helpful critical comments on the prototype.
