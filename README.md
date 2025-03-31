@@ -29,10 +29,14 @@ The ubiquitous cloud-shaped icon on our screens encapsulates an infinitely compl
 ## Bibliography
 * Bridle, James. _New Dark Age: Technology and the End of the Future_. Verso, 2019. 
 * Crawford, Kate. _Atlas of AI: Power, Politics, and the Planetary Costs of Artificial Intelligence_. Yale University Press, 2022. 
-* Fisher, Anna Watkins. _The Play in the System: The Art of Parasitical Resistance_. Duke University Press, 2020. 
-* Harari, Yuval Noah. _Homo Deus: A Brief History of Tomorrow_. Harper Perennial, 2018. 
-* Hui, Yuk. _Art and Cosmotechnics_. University of Minnesota Press, 2020. 
-* Virilio, Paul. _The Vision Machine_. Indiana University Press, 2007.
+* Fisher, Anna Watkins. _The Play in the System: The Art of Parasitical Resistance_. Duke University Press, 2020.
+* Fisher, Mark. _Ghosts of My Life: Writings on Depression, Hauntology and Lost Futures_. Zero Books, 2014. 
+* Harari, Yuval Noah. _Homo Deus: A Brief History of Tomorrow_. Harvill Secker, 2016. 
+* Hui, Yuk. _Art and Cosmotechnics_. University of Minnesota Press, 2021.
+* Stiegler, Bernard. _Nanjing Lectures (2016-2019)_. Edited and translated by Daniel Ross, Open Humanities Press, 2020. 
+* Vaidhyanathan, Siva. _The Googlization of Everything (And Why We Should Worry)_. University of California Press, 2011. 
+* Virilio, Paul. _The Vision Machine_. Translated by Julie Rose, Indiana University Press, 1994.
+* Wiener, Norbert. _The Human Use of Human Beings_. Houghton Mifflin, 1950. 
 
 ## Installation
 1. [Clone the repo](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository), or download zip (click the green `Code` button at the upper right of the repo contents, then select `Download ZIP` in the menu) and unzip it.
