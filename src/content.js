@@ -36,19 +36,33 @@ const overlayAnnotationsOverImage = (annotations, image) => {
   text.appendChild(textChild);
 
   let counter = 0;
-  setInterval(() => {
-    counter++;
-    if (counter >= annotations.length) {
-      counter = 0;
+  let start;
+
+  const animate = (timestamp) => {
+    if (start === undefined) start = timestamp;
+
+    if (timestamp - start >= 1000) {
+      counter++;
+      if (counter >= annotations.length) {
+        counter = 0;
+      }
+      textChild.innerText = annotations[counter];
+
+      TextFill(text, {
+        minFontPixels: 1,
+        maxFontPixels: 300,
+        autoResize: true
+      });
+
+      text.style.top = `${(image.offsetHeight - textChild.offsetHeight) * 0.5}px`;
+
+      start = timestamp;
     }
-    textChild.innerText = annotations[counter];
-    TextFill(text, {
-      minFontPixels: 1,
-      maxFontPixels: 300,
-      autoResize: true
-    });
-    text.style.top = `${(image.offsetHeight - textChild.offsetHeight) * 0.5}px`;
-  }, 1000);
+
+    requestAnimationFrame(animate);
+  };
+
+  requestAnimationFrame(animate);
 };
 
 const passImageUrlToBackground = (imageUrl, imageElement) => {
