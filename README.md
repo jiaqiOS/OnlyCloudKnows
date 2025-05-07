@@ -48,6 +48,7 @@ The ubiquitous cloud-shaped icon on our screens encapsulates an infinitely compl
 ## Setup
 
 ![ockSetup](https://github.com/user-attachments/assets/c86d5c9d-5fbb-4a57-be1b-9d0dc55b386b)
+This setup is based on an exhibition concept originally conceived and conducted by Raiden INST.
 
 ## Acknowledgment
 Special thanks to [Daniel C. Howe](https://rednoise.org/daniel/) for his inspirational [AdLiPo](https://rednoise.org/daniel/pages/adlipo/) software, and helpful critical comments on the prototype.
