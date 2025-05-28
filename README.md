@@ -33,6 +33,7 @@ The ubiquitous cloud-shaped icon on our screens encapsulates an infinitely compl
 * Fisher, Mark. _Ghosts of My Life: Writings on Depression, Hauntology and Lost Futures_. Zero Books, 2014. 
 * Harari, Yuval Noah. _Homo Deus: A Brief History of Tomorrow_. Harvill Secker, 2016. 
 * Hui, Yuk. _Art and Cosmotechnics_. University of Minnesota Press, 2021.
+* Naimark, Michael. [“First Word Art / Last Word Art.”](http://www.naimark.net/writing/firstword.html) _FineArtForum_, vol. 15, no. 8, Aug. 2001. 
 * Stiegler, Bernard. _Nanjing Lectures (2016-2019)_. Edited and translated by Daniel Ross, Open Humanities Press, 2020. 
 * Vaidhyanathan, Siva. _The Googlization of Everything (And Why We Should Worry)_. University of California Press, 2011. 
 * Virilio, Paul. _The Vision Machine_. Translated by Julie Rose, Indiana University Press, 1994.
