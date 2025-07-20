@@ -65,7 +65,7 @@ const overlayAnnotationsOverImage = (annotations, image) => {
   requestAnimationFrame(animate);
 };
 
-const passImageUrlToBackground = (imageUrl, imageElement) => {
+const requestAnnotationsForImage = (imageUrl, imageElement) => {
   const message = {
     action: 'fetchImage',
     data: imageUrl
@@ -80,7 +80,7 @@ const passImageUrlToBackground = (imageUrl, imageElement) => {
   });
 };
 
-const getImageElementWithUrl = (element) => {
+const extractImageUrlFrom = (element) => {
   if (element.offsetWidth < 60 || element.offsetHeight < 60) return;
 
   let imageUrl = '';
@@ -92,15 +92,15 @@ const getImageElementWithUrl = (element) => {
   }
 
   if (imageUrl) {
-    passImageUrlToBackground(imageUrl, element);
+    requestAnnotationsForImage(imageUrl, element);
   }
 };
 
-const checkVisibility = (targetElements) => {
+const observeVisible = (targetElements) => {
   const observer = new IntersectionObserver((entries, observer) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
-        getImageElementWithUrl(entry.target);
+        extractImageUrlFrom(entry.target);
         observer.unobserve(entry.target);
       }
     });
@@ -117,9 +117,9 @@ const checkVisibility = (targetElements) => {
   intersectionObservers.push(observer);
 };
 
-const trackLazyLoading = (summaries) => {
+const handleAddedElements = (summaries) => {
   const summary = summaries[0];
-  checkVisibility(summary.added);
+  observeVisible(summary.added);
 };
 
 const setup = async () => {
@@ -130,10 +130,10 @@ const setup = async () => {
     document.fonts.add(font);
 
     const elements = document.querySelectorAll('img, *[style]');
-    checkVisibility(elements);
+    observeVisible(elements);
 
     mutationObserver = new MutationSummary({
-      callback: trackLazyLoading,
+      callback: handleAddedElements,
       queries: [{
         element: 'img, *[style]'
       }]
