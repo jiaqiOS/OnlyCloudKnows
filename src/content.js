@@ -1,4 +1,6 @@
+const MIN_IMAGE_SIZE = 60;
 const PATH_TO_FONT = chrome.runtime.getURL('fonts/dejavu-sans-condensed-bold-webfont.woff2');
+
 let mutationObserver, intersectionObservers = [];
 
 const overlayAnnotationsOverImage = (annotations, image) => {
@@ -81,7 +83,7 @@ const requestAnnotationsForImage = (url, image) => {
 };
 
 const extractImageUrlFrom = (element) => {
-  if (element.offsetWidth < 60 || element.offsetHeight < 60) return;
+  if (element.offsetWidth < MIN_IMAGE_SIZE || element.offsetHeight < MIN_IMAGE_SIZE) return;
 
   let url = '';
   if (element.tagName.toLowerCase() === 'img') {
