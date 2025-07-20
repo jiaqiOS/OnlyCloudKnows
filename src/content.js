@@ -65,17 +65,17 @@ const overlayAnnotationsOverImage = (annotations, image) => {
   requestAnimationFrame(animate);
 };
 
-const requestAnnotationsForImage = (imageUrl, imageElement) => {
+const requestAnnotationsForImage = (url, image) => {
   const message = {
     action: 'fetchImage',
-    data: imageUrl
+    data: url
   };
 
   chrome.runtime.sendMessage(message, (response) => {
     if (chrome.runtime.lastError) {
       console.warn(chrome.runtime.lastError.message);
     } else if (response && response.length > 0) {
-      overlayAnnotationsOverImage(response, imageElement);
+      overlayAnnotationsOverImage(response, image);
     }
   });
 };
@@ -83,20 +83,20 @@ const requestAnnotationsForImage = (imageUrl, imageElement) => {
 const extractImageUrlFrom = (element) => {
   if (element.offsetWidth < 60 || element.offsetHeight < 60) return;
 
-  let imageUrl = '';
+  let url = '';
   if (element.tagName.toLowerCase() === 'img') {
-    imageUrl = new URL(element.currentSrc || element.src, window.location.href).href;
+    url = new URL(element.currentSrc || element.src, window.location.href).href;
   } else if (element.style.backgroundImage) {
     const backgroundImageUrl = element.style.backgroundImage.replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
-    imageUrl = new URL(backgroundImageUrl, window.location.href).href;
+    url = new URL(backgroundImageUrl, window.location.href).href;
   }
 
-  if (imageUrl) {
-    requestAnnotationsForImage(imageUrl, element);
+  if (url) {
+    requestAnnotationsForImage(url, element);
   }
 };
 
-const observeVisible = (targetElements) => {
+const observeVisible = (elements) => {
   const observer = new IntersectionObserver((entries, observer) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
@@ -110,8 +110,8 @@ const observeVisible = (targetElements) => {
     threshold: 0.5
   });
 
-  targetElements.forEach((el) => {
-    observer.observe(el);
+  elements.forEach((element) => {
+    observer.observe(element);
   });
 
   intersectionObservers.push(observer);
