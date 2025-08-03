@@ -14,20 +14,23 @@
     "service_worker": "src/background.js",
     "type": "module"
   },
-  "content_scripts": [{
-    "matches": ["http://*/*", "https://*/*"],
-    "js": ["libraries/mutation-summary.js", "libraries/textfill.min.js", "src/content.js"]
-  }],
-  "web_accessible_resources": [{
-    "resources": ["fonts/*.woff2"],
-    "matches": ["<all_urls>"]
-  }],
-  "permissions": [
-    "activeTab",
-    "scripting",
-    "storage",
-    "tabs"
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": [
+        "libraries/mutation-summary.js",
+        "libraries/textfill.min.js",
+        "src/content.js"
+      ]
+    }
   ],
+  "web_accessible_resources": [
+    {
+      "resources": ["fonts/*.woff2"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "permissions": ["activeTab", "scripting", "storage", "tabs"],
   "host_permissions": ["<all_urls>"],
   "action": {
     "default_icon": {
