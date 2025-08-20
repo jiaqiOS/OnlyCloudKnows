@@ -190,7 +190,7 @@ const setup = async () => {
   try {
     await loadWebFont();
   } catch (e) {
-    console.error('Failed to load DejaVu font', e);
+    console.error('Failed to load DejaVu font:', e);
   }
 
   const elements = document.querySelectorAll('img, *[style]');

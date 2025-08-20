@@ -33,7 +33,7 @@ const fetchApiKey = async () => {
       'background-color: white; border: 3px solid springgreen; color: red; font-size: 5em; font-style: italic; font-weight: bold;'
     );
   } catch (e) {
-    console.error('Failed to fetch API key', e);
+    console.error('Failed to fetch API key:', e);
   }
 };
 
@@ -92,7 +92,7 @@ const detectLabelsWithVisionApi = async (base64, sendResponse) => {
 
     sendResponse(filterArt(labelAnnotations));
   } catch (e) {
-    console.error('Failed to detect labels with Vision API', e);
+    console.error('Failed to detect labels with Vision API:', e);
   }
 };
 
@@ -137,7 +137,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 const toggleBadgeStatus = (isEnabled) => {
   chrome.action.setBadgeBackgroundColor({ color: 'white' });
   const badgeText = isEnabled ? '%Art' : 'Off';
-  const badgeTextColor = isEnabled ? 'red' : 'blue';
+  const badgeTextColor = isEnabled ? 'red' : 'gray';
   chrome.action.setBadgeText({ text: badgeText });
   chrome.action.setBadgeTextColor({ color: badgeTextColor });
 };
@@ -148,11 +148,13 @@ const updateExtensionStatus = (isEnabled) => {
   });
 };
 
-chrome.storage.local.get(['status']).then((defaultSetting) => {
-  if (!defaultSetting.status || !!defaultSetting.status) {
-    updateExtensionStatus(false);
-  }
-});
+// chrome.storage.local.get(['status']).then((defaultSetting) => {
+//   if (typeof defaultSetting.status === 'undefined') {
+updateExtensionStatus(false); // Always reset to disabled on background load
+//   } else {
+//     updateExtensionStatus(defaultSetting.status);
+//   }
+// });
 
 chrome.action.onClicked.addListener(() => {
   chrome.storage.local.get(['status']).then((storedSetting) => {
