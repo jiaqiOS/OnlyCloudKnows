@@ -1,6 +1,6 @@
 const FONT_NAME = 'DejaVu Sans Condensed Bold';
 const PATH_TO_FONT = chrome.runtime.getURL(
-  'fonts/dejavu-sans-condensed-bold-webfont.woff2'
+  'fonts/dejavu-sans-condensed-bold-webfont.woff2',
 );
 const PARENT_CLASSNAME = 'ock-extension-parentElement';
 const CONTAINER_CLASSNAME = 'ock-extension-injectedContainer';
@@ -142,7 +142,7 @@ const extractImageUrlFrom = (element) => {
     console.warn(
       'Unable to construct valid image URL from element:',
       element,
-      e
+      e,
     );
   }
 
@@ -165,7 +165,7 @@ const observeVisible = (elements) => {
       root: null,
       rootMargin: '0px',
       threshold: 0.5,
-    }
+    },
   );
   elements.forEach((element) => observer.observe(element));
   intersectionObservers.push(observer);

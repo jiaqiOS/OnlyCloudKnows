@@ -28,10 +28,7 @@ const fetchApiKey = async () => {
 
     const apiKeyJson = await apiKeyResponse.json();
     apiKey = apiKeyJson.key;
-    console.log(
-      '%cGot API key!',
-      'background-color: white; border: 3px solid springgreen; color: red; font-size: 5em; font-style: italic; font-weight: bold;'
-    );
+    console.log('Got API key!');
   } catch (e) {
     console.error('Failed to fetch API key:', e);
   }
@@ -81,7 +78,7 @@ const detectLabelsWithVisionApi = async (base64, sendResponse) => {
   try {
     const labelDetectionResponse = await fetch(
       `${API_ENDPOINT}${apiKey}`,
-      options
+      options,
     );
     if (!labelDetectionResponse.ok) {
       throw new Error(`HTTP error! status: ${labelDetectionResponse.status}`);
