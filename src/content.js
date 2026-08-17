@@ -8,9 +8,12 @@ const IMAGE_CLASSNAME = 'ock-extension-labeledImage';
 const MIN_IMAGE_SIZE = 60;
 
 const PROCESSED_IMAGE_URLS = new Set();
-let mutationObserver = null;
-let intersectionObservers = [];
-let animationFrameIds = [];
+
+const lifecycle = {
+  mutationObserver: null,
+  intersectionObserver: null,
+  animations: [],
+};
 
 const createContainer = () => {
   const container = document.createElement('div');
@@ -61,11 +64,15 @@ const fitAndCenterTextInImage = (image, textDiv, textSpan) => {
 const cycleLabels = (image, labels, textDiv, textSpan) => {
   let counter = 0;
   let start;
+  const animation = {
+    currentId: null,
+  };
 
-  const updateLabelFrame = (timestamp) => {
+  const updateLabel = (timestamp) => {
     if (start === undefined) start = timestamp;
+    const elapsed = timestamp - start;
 
-    if (timestamp - start >= 1000) {
+    if (elapsed >= 1000) {
       counter++;
       if (counter >= labels.length) {
         counter = 0;
@@ -76,10 +83,11 @@ const cycleLabels = (image, labels, textDiv, textSpan) => {
       start = timestamp;
     }
 
-    requestAnimationFrame(updateLabelFrame);
+    animation.currentId = requestAnimationFrame(updateLabel);
   };
-  const id = requestAnimationFrame(updateLabelFrame);
-  animationFrameIds.push(id);
+
+  animation.currentId = requestAnimationFrame(updateLabel);
+  lifecycle.animations.push(animation);
 };
 
 const overlayArtLabelsOverImage = (image, labels) => {
@@ -151,24 +159,31 @@ const extractImageUrlFrom = (element) => {
   }
 };
 
+const initIntersectionObserver = () => {
+  if (!lifecycle.intersectionObserver) {
+    lifecycle.intersectionObserver = new IntersectionObserver(
+      (entries, observer) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            extractImageUrlFrom(entry.target);
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.5,
+      },
+    );
+  }
+};
+
 const observeVisible = (elements) => {
-  const observer = new IntersectionObserver(
-    (entries, observer) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          extractImageUrlFrom(entry.target);
-          observer.unobserve(entry.target);
-        }
-      });
-    },
-    {
-      root: null,
-      rootMargin: '0px',
-      threshold: 0.5,
-    },
+  initIntersectionObserver();
+  elements.forEach((element) =>
+    lifecycle.intersectionObserver.observe(element),
   );
-  elements.forEach((element) => observer.observe(element));
-  intersectionObservers.push(observer);
 };
 
 const handleAddedElements = (summaries) => {
@@ -197,7 +212,7 @@ const setup = async () => {
   observeVisible(elements);
 
   try {
-    mutationObserver = new MutationSummary({
+    lifecycle.mutationObserver = new MutationSummary({
       callback: handleAddedElements,
       queries: [{ element: 'img, *[style]' }],
     });
@@ -206,14 +221,21 @@ const setup = async () => {
   }
 };
 
-const disconnectObservers = () => {
-  if (mutationObserver) {
-    mutationObserver.disconnect();
-    mutationObserver = null;
+const cleanupLifecycle = () => {
+  if (lifecycle.mutationObserver) {
+    lifecycle.mutationObserver.disconnect();
+    lifecycle.mutationObserver = null;
   }
 
-  intersectionObservers.forEach((observer) => observer.disconnect());
-  intersectionObservers = [];
+  if (lifecycle.intersectionObserver) {
+    lifecycle.intersectionObserver.disconnect();
+    lifecycle.intersectionObserver = null;
+  }
+
+  lifecycle.animations.forEach((animation) =>
+    cancelAnimationFrame(animation.currentId),
+  );
+  lifecycle.animations = [];
 };
 
 const removeOverlaysAndRestoreImages = () => {
@@ -236,13 +258,9 @@ const removeOverlaysAndRestoreImages = () => {
 };
 
 const teardown = () => {
-  disconnectObservers();
+  cleanupLifecycle();
   removeOverlaysAndRestoreImages();
-
   PROCESSED_IMAGE_URLS.clear();
-
-  animationFrameIds.forEach((id) => cancelAnimationFrame(id));
-  animationFrameIds = [];
 };
 
 chrome.storage.local.get(['status']).then((storedSetting) => {
