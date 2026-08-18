@@ -61,7 +61,10 @@ const detectLabelsWithVisionApi = async (base64, sendResponse) => {
           {
             type: 'LABEL_DETECTION',
             maxResults: 30,
-            // "model": "builtin/legacy"
+            // Detection results in the existing image and video documentation
+            // were generated with the label detection model that preceded Google's August 23, 2024 update.
+            // See: https://cloud.google.com/vision/docs/release-notes#August_23_2024
+            // model: 'builtin/legacy',
           },
         ],
       },
