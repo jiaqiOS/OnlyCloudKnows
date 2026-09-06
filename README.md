@@ -6,13 +6,7 @@
 
 ## Description
 
-"In fact, art always attempted to represent the greatest possible power, the power that ruled the world in its totality..."
-
-― Boris Groys, Art Power
-
-_Only Cloud Knows_ is a Chrome extension that decides what is art through Google Cloud Vision. As each page loads, art-related categories and their confidence scores are overlaid on the images—measuring the incalculable, the incomparable, and the unknown in computationally legible form. By navigating within machine intelligence's wrong-headed perceptions, _Only Cloud Knows_ invites users to consider the limits of this data-centric worldview: What lies beneath its threshold of recognizability? What is excluded from future possibilities? With this project, I aim to mirror how faith in the technical sightline has clouded our vision and to uncover how accelerating cognitive automation has surreptitiously short-circuited our sensory-noetic loop.
-
-The ubiquitous cloud-shaped icon on our screens encapsulates an infinitely complex system of networks comprised of servers, routers, fiber-optic cables, data centers, and satellites, encircling the entire planet. This digital and physical infrastructure generates, aggregates, stores, transmits, and processes massive amounts of data, providing a "natural" environment for developing artificial intelligence systems at scale. Machine learning instruments deployed to the cloud enhance their capacities via giant datasets, becoming the engine of improvement in cloud-based technology's overall efficiency and effectiveness. The amalgamation of cloud computing with artificial intelligence is termed "the intelligent cloud," hegemonically controlled by a handful of leading technology corporations, and capable of inscribing more and more aspects of the world into the computational body, based on one implicit assumption: that the world is reducible to data that can be objectively analyzed and perfectly modeled.
+_Only Cloud Knows_ is a Chrome extension that decides what is art through Google Cloud Vision. As each page loads, art-related categories and their confidence scores are overlaid on the images—measuring the incalculable, the incomparable, and the unknown in computationally legible form.
 
 ## Bibliography
 
