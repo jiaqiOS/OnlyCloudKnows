@@ -1,12 +1,14 @@
+// The typeface's name suggests that a model can only recognize what it has already seen.
 const FONT_NAME = 'DejaVu Sans Condensed Bold';
 const PATH_TO_FONT = chrome.runtime.getURL(
   'fonts/dejavu-sans-condensed-bold-webfont.woff2',
 );
+
 const PARENT_CLASSNAME = 'ock-extension-parentElement';
 const CONTAINER_CLASSNAME = 'ock-extension-injectedContainer';
 const IMAGE_CLASSNAME = 'ock-extension-labeledImage';
-const MIN_IMAGE_SIZE = 60;
 
+const MIN_IMAGE_SIZE = 60;
 const PROCESSED_IMAGE_URLS = new Set();
 
 const lifecycle = {
