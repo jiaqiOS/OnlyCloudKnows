@@ -133,7 +133,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 
 // Toggle extension on icon click
-// Logic adapted from Kyle McDonald’s COVID Pause (https://github.com/kylemcdonald/COVIDPause)
+// Logic adapted from Kyle McDonald's COVID Pause (https://github.com/kylemcdonald/COVIDPause)
 const toggleBadgeStatus = (isEnabled) => {
   chrome.action.setBadgeBackgroundColor({ color: 'white' });
   const badgeText = isEnabled ? '%Art' : 'Off';
